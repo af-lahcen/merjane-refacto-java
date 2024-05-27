@@ -37,7 +37,7 @@ public class OrderService {
         ids.add(orderId);
         Set<Product> products = order.getItems();
         for (Product p : products) {
-            if (p.getType().equals(ProductType.NORMAL)) {
+            if (ProductType.NORMAL.equals(p.getType())) {
                 if (p.getAvailable() > 0) {
                     p.setAvailable(p.getAvailable() - 1);
                     productRepository.save(p);
@@ -47,7 +47,7 @@ public class OrderService {
                         productService.notifyDelay(leadTime, p);
                     }
                 }
-            } else if (p.getType().equals(ProductType.SEASONAL)) {
+            } else if (ProductType.SEASONAL.equals(p.getType())) {
                 // Add new season rules
                 if ((LocalDate.now().isAfter(p.getSeasonStartDate()) && LocalDate.now().isBefore(p.getSeasonEndDate())
                         && p.getAvailable() > 0)) {
@@ -56,14 +56,14 @@ public class OrderService {
                 } else {
                     productService.handleSeasonalProduct(p);
                 }
-            } else if (p.getType().equals(ProductType.EXPIRABLE)) {
+            } else if (ProductType.EXPIRABLE.equals(p.getType())) {
                 if (p.getAvailable() > 0 && p.getExpiryDate().isAfter(LocalDate.now())) {
                     p.setAvailable(p.getAvailable() - 1);
                     productRepository.save(p);
                 } else {
                     productService.handleExpiredProduct(p);
                 }
-            } if (p.getType().equals(ProductType.FLASHSALE)) {
+            } if (ProductType.FLASHSALE.equals(p.getType())) {
                 if (p.getAvailable() > 0 && p.getExpiryDate().isAfter(LocalDate.now())) {
                     p.setAvailable(p.getAvailable() - 1);
                     productRepository.save(p);
